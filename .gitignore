@@ -1,0 +1,6 @@
+/classes/
+/modules/
+/.exploded/
+.ceylon/config.old
+.classpath
+.project
