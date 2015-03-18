@@ -1,3 +1,36 @@
+"""
+   Serialize a DOM node using <a href="http://www.w3.org/TR/html-polyglot/">polyglot markup</a>.
+   This function takes care of the following points of the specification:
+   <ul>
+   	<li>minimized tag syntax for void elements
+   	<li>write the xml:lang attribute on the html element if the lang attribute is present
+   	<li>surround all attributes in double quotation marks
+   	<li>escape attribute values and text, except in raw text elements
+   </ul>
+   All the other points of the specification must be take care of when building the node, especially:
+   <ul>
+   	<li>use the &lt;!DOCTYPE html> doctype
+   	<li>put an xmlns="http://www.w3.org/1999/xhtml" attribute on the html element
+   </ul>
+   Example use:
+   
+       value document = Document {
+           DocumentType("html"),
+           html {
+               xmlns = "http://www.w3.org/1999/xhtml";
+               lang = "en";
+               head {
+                   title { "Ceylon Community" }
+               },
+               body {
+                   h2 { "Welcome ``you``, to Ceylon ``language.version``!" },
+                   p { "Now get your code on :)" }
+               }
+           }
+       };
+       polyglotString(document);
+   
+"""
 shared String polyglotString(Node node) {
 	switch (node)
 	case (is Element) {
