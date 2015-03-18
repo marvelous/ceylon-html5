@@ -15,8 +15,7 @@ import ceylon.ast.core {
 	Import,
 	ImportElements,
 	ImportTypeElement,
-	ImportFunctionValueElement,
-	ValueDefinition
+	ImportFunctionValueElement
 }
 import ceylon.ast.create {
 	baseExpression,
@@ -26,7 +25,8 @@ import ceylon.ast.create {
 	invocation,
 	functionDefinition,
 	uidentifier,
-	classDefinition
+	classDefinition,
+	extendedType
 }
 import ceylon.ast.redhat {
 	SimpleTokenFactory,
@@ -52,7 +52,6 @@ import io.github.marvelous.html5.syntax {
 	DocumentType,
 	Comment,
 	ProcessingInstruction,
-	createElement,
 	createAttributes
 }
 
@@ -106,13 +105,12 @@ shared void run() {
 				fullPackageName(`package io.github.marvelous.html5.syntax`),
 				ImportElements(
 					[
-						ImportTypeElement(uidentifier(`interface SyntaxAttributeGroup`.name)),
+						ImportTypeElement(uidentifier(`class SyntaxAttributeGroup`.name)),
 						ImportTypeElement(uidentifier(`class SyntaxElement`.name)),
 						ImportTypeElement(uidentifier(`class DocumentType`.name)),
 						ImportTypeElement(uidentifier(`class Comment`.name)),
 						ImportTypeElement(uidentifier(`class ProcessingInstruction`.name)),
-						ImportFunctionValueElement(lidentifier(`function createAttributes`.name)),
-						ImportFunctionValueElement(lidentifier(`function createElement`.name))
+						ImportFunctionValueElement(lidentifier(`function createAttributes`.name))
 					]
 				)
 			)
@@ -163,30 +161,25 @@ shared void run() {
 						);
 						Return(
 							invocation {
-								baseExpression(`function createElement`.name);
+								baseExpression(`SyntaxElement`.declaration.name);
 								StringLiteral(type.name),
-								baseExpression(lidentifier(`SyntaxElement.childNodes`.declaration.name)),
-								attributes
+								attributes,
+								baseExpression(lidentifier(`SyntaxElement.childNodes`.declaration.name))
 							}
 						)
 					};
 				} else {
 					return classDefinition {
 						annotations = annotations {
-							`function shared`.name
+							`function shared`.name,
+							`function final`.name
 						};
 						name = type.name;
-						satisfiedTypes = [`SyntaxAttributeGroup`.declaration.name];
+						extendedType = extendedType {
+							`SyntaxAttributeGroup`.declaration.name;
+							attributes
+						};
 						parameters = parameters;
-						ValueDefinition {
-							annotations = annotations {
-								`function shared`.name,
-								`function actual`.name
-							};
-							type = typeAst(`SyntaxAttributeGroup.attributes`.type);
-							name = lidentifier(`SyntaxAttributeGroup.attributes`.declaration.name);
-							definition = Specifier(attributes);
-						}
 					};
 				}
 			}

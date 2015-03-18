@@ -18,54 +18,32 @@ shared final class DocumentType(shared String name, shared String publicId = "",
 shared final class ProcessingInstruction(shared String target, shared String data) {}
 shared final class Comment(shared String data) {}
 
-shared interface AttributeGroup {
-	shared formal {Attribute*} attributes;
+shared class AttributeGroup(shared {Attribute*} attributes) {
 }
 
-shared abstract class Element() satisfies ParentNode, AttributeGroup {
-	shared formal String tagName;
+shared class Element(tagName, attributes, childNodes) extends AttributeGroup(attributes) satisfies ParentNode {
+	shared String tagName;
+	{Attribute*} attributes;
+	shared actual {ChildNode*} childNodes;
 }
 
 shared {Attribute*} createAttributes(<String->Anything>* attributes) => attributes.flatMap((attribute) {
-	if (exists item = attribute.item) {
-		if (is AttributeGroup item) { return item.attributes; }
-		else { return [attribute.key->item.string]; }
-	}
-	else { return []; }
-});
-
-shared AttributeGroup createAttributeGroup({Attribute*} attributes) {
-	value attributesArg = attributes;
-	object attributeGroup satisfies AttributeGroup {
-		shared actual {Attribute*} attributes = attributesArg;
-	}
-	return attributeGroup;	
-}
-
-shared Element createElement(String tagName, {ChildNode*} childNodes, {Attribute*} attributes) {
-	value tagNameArg = tagName;
-	value childNodesArg = childNodes;
-	value attributesArg = attributes;
-	object element extends Element() {
-		shared actual String tagName = tagNameArg;
-		shared actual {Attribute*} attributes = attributesArg;
-		shared actual {ChildNode*} childNodes = childNodesArg;
-	}
-	return element;	
-}
+		if (exists item = attribute.item) {
+			if (is AttributeGroup item) { return item.attributes; } else { return [attribute.key->item.string]; }
+		} else { return []; }
+	});
 
 shared Element element(String tagName, Attribute|ChildNode* content) {
 	value tagNameArg = tagName;
-	object element extends Element() {
-		shared actual String tagName = tagNameArg;
-		shared actual {Attribute*} attributes = content
-				.map((element) { if (is Attribute element) { return element; } else { return null; } })
-				.coalesced;
-		shared actual {ChildNode*} childNodes = content
-				.map((element) { if (is ChildNode element) { return element; } else { return null; } })
-				.coalesced;
-	}
-	return element;
+	return Element {
+		tagName = tagNameArg;
+		attributes = content
+			.map((element) { if (is Attribute element) { return element; } else { return null; } })
+			.coalesced;
+		childNodes = content
+			.map((element) { if (is ChildNode element) { return element; } else { return null; } })
+			.coalesced;
+	};
 }
 
 shared String nodeName(Node node) {

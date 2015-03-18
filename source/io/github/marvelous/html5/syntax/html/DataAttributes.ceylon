@@ -3,7 +3,7 @@ import io.github.marvelous.html5.syntax {
 	AttributeGroup
 }
 
-shared class DataAttributes(shared Attribute* unprefixed) satisfies AttributeGroup {
-	shared actual {Attribute*} attributes
-			=> unprefixed.map((attribute) => ("data-" + attribute.key)->attribute.item);
+shared final class DataAttributes(shared Attribute* unprefixed)
+		extends AttributeGroup(unprefixed.map((attribute) =>
+			("data-" + attribute.key)->attribute.item)) {
 }
