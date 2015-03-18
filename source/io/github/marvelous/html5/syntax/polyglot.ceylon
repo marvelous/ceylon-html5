@@ -2,7 +2,15 @@ shared String polyglotString(Node node) {
 	switch (node)
 	case (is Element) {
 		value tagName = node.tagName;
-		value attributes = "".join(node.attributes.map((attribute) =>
+		
+		{Attribute*} attributes;
+		if (tagName == "html", exists lang = node.attributes.find((attribute) => attribute.key == "lang")) {
+			attributes = node.attributes.follow("xml:lang"->lang.item);
+		} else {
+			attributes = node.attributes;
+		}
+		
+		value attributesString = "".join(attributes.map((attribute) =>
 					" ``attribute.key``=\"``attribute.item
 						.replace("&", "&amp;")
 						.replace("\t", "&#x9;")
@@ -11,20 +19,21 @@ shared String polyglotString(Node node) {
 						.replace("\"", "&quot;")
 					``\""
 			));
+		
 		switch (tagName)
 		case ("area" | "base" | "br" | "col" | "embed" | "hr" | "img" | "input" | "keygen" | "link" | "meta" | "param" | "source" | "track" | "wbr") {
 			// 4.6.1 Void elements
-			return "<``tagName````attributes``/>";
+			return "<``tagName````attributesString``/>";
 		}
 		case ("script" | "style") {
 			// 4.6.2 Raw text elements (script and style)
 			value inner = textContent(node);
 			assert (exists inner);
-			return "<``tagName````attributes``>``inner``</``tagName``>";
+			return "<``tagName````attributesString``>``inner``</``tagName``>";
 		}
 		else {
 			value inner = "".join(node.childNodes.map(polyglotString));
-			return "<``tagName````attributes``>``inner``</``tagName``>";
+			return "<``tagName````attributesString``>``inner``</``tagName``>";
 		}
 	}
 	case (is Text) {
