@@ -23,6 +23,7 @@ Attributes htmlElement = {
 	Attribute { "itemscope"; },
 	Attribute { "itemtype"; },
 	Attribute { "lang"; },
+	Attribute { "xml:lang"; name = "xmlLang"; },
 	Attribute { "spellcheck"; },
 	Attribute { "style"; },
 	Attribute { "tabindex"; },

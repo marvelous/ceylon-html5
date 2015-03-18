@@ -3,7 +3,6 @@
    This function takes care of the following points of the specification:
    <ul>
    	<li>minimized tag syntax for void elements
-   	<li>write the xml:lang attribute on the html element if the lang attribute is present
    	<li>surround all attributes in double quotation marks
    	<li>escape attribute values and text, except in raw text elements
    </ul>
@@ -11,6 +10,7 @@
    <ul>
    	<li>use the &lt;!DOCTYPE html> doctype
    	<li>put an xmlns="http://www.w3.org/1999/xhtml" attribute on the html element
+   	<li>write the xml:lang attribute on the html element if the lang attribute is present
    </ul>
    Example use:
    
@@ -18,6 +18,7 @@
            DocumentType("html"),
            html {
                xmlns = "http://www.w3.org/1999/xhtml";
+               xmlLang = "en";
                lang = "en";
                head {
                    title { "Ceylon Community" }
@@ -36,14 +37,7 @@ shared String polyglotString(Node node) {
 	case (is Element) {
 		value tagName = node.tagName;
 		
-		{Attribute*} attributes;
-		if (tagName == "html", exists lang = node.attributes.find((attribute) => attribute.key == "lang")) {
-			attributes = node.attributes.follow("xml:lang"->lang.item);
-		} else {
-			attributes = node.attributes;
-		}
-		
-		value attributesString = "".join(attributes.map((attribute) =>
+		value attributes = "".join(node.attributes.map((attribute) =>
 					" ``attribute.key``=\"``attribute.item
 						.replace("&", "&amp;")
 						.replace("\t", "&#x9;")
@@ -56,17 +50,17 @@ shared String polyglotString(Node node) {
 		switch (tagName)
 		case ("area" | "base" | "br" | "col" | "embed" | "hr" | "img" | "input" | "keygen" | "link" | "meta" | "param" | "source" | "track" | "wbr") {
 			// 4.6.1 Void elements
-			return "<``tagName````attributesString``/>";
+			return "<``tagName````attributes``/>";
 		}
 		case ("script" | "style") {
 			// 4.6.2 Raw text elements (script and style)
 			value inner = textContent(node);
 			assert (exists inner);
-			return "<``tagName````attributesString``>``inner``</``tagName``>";
+			return "<``tagName````attributes``>``inner``</``tagName``>";
 		}
 		else {
 			value inner = "".join(node.childNodes.map(polyglotString));
-			return "<``tagName````attributesString``>``inner``</``tagName``>";
+			return "<``tagName````attributes``>``inner``</``tagName``>";
 		}
 	}
 	case (is Text) {

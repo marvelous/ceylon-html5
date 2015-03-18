@@ -5,12 +5,9 @@
        value document = Document {
            ProcessingInstruction("xml", "version=\"1.0\" encoding=\"UTF-8\""),
            DocumentType("html", "-//W3C//DTD XHTML 1.0 Strict//EN", "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"),
-           Element {
-               "html";
-               createAttributes(
-                   "xmlns"->"http://www.w3.org/1999/xhtml",
-                   "xml:lang"->"en"
-               );
+           html {
+               xmlns = "http://www.w3.org/1999/xhtml";
+               xmlLang = "en";
                head {
                    title { "Ceylon Community" }
                },
