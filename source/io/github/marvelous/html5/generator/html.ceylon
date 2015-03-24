@@ -155,7 +155,7 @@ Declarations html = {
 	},
 	Element { "meta";
 		Attribute { "name"; },
-		Attribute { "httpEquiv"; },
+		Attribute { "http-equiv"; },
 		Attribute { "content"; },
 		Attribute { "charset"; },
 		*htmlElement
@@ -539,7 +539,7 @@ Declarations html = {
 	},
 	// 4.10 Forms
 	Element { "form";
-		Attribute { "acceptCharset"; },
+		Attribute { "accept-charset"; },
 		Attribute { "action"; },
 		Attribute { "autocomplete"; },
 		Attribute { "enctype"; },
