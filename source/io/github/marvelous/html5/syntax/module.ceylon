@@ -12,5 +12,5 @@
        };
    
    """
-module io.github.marvelous.html5.syntax "1.0.0" {
+module io.github.marvelous.html5.syntax "1.1.0" {
 }
